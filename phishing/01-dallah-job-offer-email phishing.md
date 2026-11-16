@@ -1,0 +1,94 @@
+# Recruitment Phishing Impersonating Dallah Driving School
+
+**Date received:** 2026-11-08
+**Date analyzed:** 2026-11-16
+**Category:** Phishing / Credential & Personal Data Harvesting
+**Tools used:** Gmail "Show original", manual header analysis, email body decoding
+
+## Summary
+
+A fake job offer email impersonating Dallah Driving School (Saudi Arabia) was received
+via BCC. The email passed SPF, DKIM and DMARC, but the sender domain, link destination
+and hosting infrastructure had no relation to the impersonated organization. The goal
+was to lure job seekers into a fake "recruitment platform" to harvest personal data.
+
+**Verdict:** True Positive — Recruitment Phishing
+
+## Analysis
+
+### 1. Context
+- The recipient never applied for a job at this organization.
+- Unsolicited "your application has been approved" message with no interview.
+
+### 2. Header Analysis
+
+| Field | Value | Observation |
+|---|---|---|
+| From | `Joseph Clark <joseph@glidelogicio[.]co>` | Personal English name on an unrelated domain claiming to be a Saudi school's HR |
+| To | *(missing)* | Recipient was in BCC — mass mailing |
+| Return-Path | `joseph@glidelogicio[.]co` | Matches sender |
+| Origin server | `outbound.protection.outlook.com` `[2a01:111:f403:dc08::]` | Legitimate Microsoft 365 server — attacker abused a trusted cloud service |
+| Tenant region | `INDPRD01` / `southindia` | Hosted in India, not Saudi Arabia |
+| Message-ID | `...@...PROD.OUTLOOK.COM` | Normal for Microsoft 365 — not a red flag |
+
+### 3. Authentication Results
+
+| Check | Result |
+|---|---|
+| SPF | pass |
+| DKIM | pass |
+| DMARC | pass (p=REJECT) |
+
+All checks passed because the attacker registered their own domain and configured it
+correctly. Authentication verifies the sender's **identity**, not their **intent**.
+
+### 4. Body & Link Analysis
+- Professional, well-written Arabic text (likely AI-assisted) — good language is no longer a sign of legitimacy.
+- Generic greeting: "Dear Sir/Madam" — no recipient name.
+- Emotional lure: congratulations on job approval, creating urgency to respond.
+- Link text: "Official Recruitment Platform"
+  - Actual destination: `hxxps://cairnpartnerio[.]com/ddschool` — a second unrelated domain.
+  - Hidden in HTML: URL shortener `zrrtkq.s[.]gy` — used to hide the final destination.
+- Logo hosted on a Gmail signature server (`googleusercontent.com/mail-sig`), not on the organization's website.
+- Request: "verify your personal and job information" — data harvesting.
+
+### 5. Threat Intelligence Results
+*(To be added: VirusTotal detections, domain creation dates, urlscan.io screenshot.)*
+
+## IOCs
+
+| Type | Value |
+|---|---|
+| Sender domain | `glidelogicio[.]co` |
+| Sender email | `joseph@glidelogicio[.]co` |
+| Phishing URL | `hxxps://cairnpartnerio[.]com/ddschool` |
+| URL shortener | `zrrtkq.s[.]gy` |
+
+## MITRE ATT&CK
+
+| Technique | ID |
+|---|---|
+| Phishing for Information: Spearphishing Link | T1598.003 |
+| Phishing: Spearphishing Link | T1566.002 |
+| Impersonation | T1656 |
+| Acquire Infrastructure: Domains | T1583.001 |
+| Establish Accounts: Email Accounts | T1585.002 |
+
+## Verdict & Recommendations
+
+**Verdict:** True Positive — Recruitment phishing impersonating Dallah Driving School.
+
+**Recommendations:**
+1. Do not click the link or reply.
+2. Report as phishing in the email client.
+3. Block the sender domain and URL domains.
+4. If any data was submitted: change passwords and enable MFA.
+5. Verify job offers only through the organization's official website or phone number.
+
+## Lessons Learned
+
+- SPF, DKIM and DMARC can all **pass** on a phishing email — they prove the email came from that domain, not that the domain is trustworthy.
+- Attackers abuse legitimate cloud services (Microsoft 365) to bypass filters.
+- A missing `To:` field indicates BCC mass mailing.
+- Platform knowledge matters: a Message-ID mismatch is normal for Microsoft 365.
+- Job seekers are high-value targets because they expect recruitment emails.
