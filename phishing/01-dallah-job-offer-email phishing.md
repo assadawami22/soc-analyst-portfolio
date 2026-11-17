@@ -66,6 +66,27 @@ correctly. Authentication verifies the sender's **identity**, not their **intent
 - 2026-10-19 — Phishing URL first submitted to VirusTotal
 - 2026-11-08 — Email received
 
+  **urlscan.io results:**
+
+Redirect chain:
+`hxxps://cairnpartnerio[.]com/ddschool` → HTTP 302 → `hxxps://ddcschoolasd.bolt[.]host/`
+
+| Domain | Role |
+|---|---|
+| `ddcschoolasd.bolt[.]host` | Phishing landing page (fake employment data form) |
+| `tbekwctgnxucijexaqwh.supabase[.]co` | Attacker's backend — likely stores victim data |
+| `bolt[.]new` | AI website builder used to create the page |
+| `cloudfront[.]net` / Google Fonts | Platform resources — benign |
+
+- Landing page hosted behind Cloudflare (`104.26.13.118`). This is a shared CDN IP and
+  should **not** be blocked; block domains instead.
+- Valid TLS certificate — HTTPS does not indicate legitimacy.
+- Landing page first seen ~18h before the scan, newer than the email itself, suggesting
+  the redirector is used to rotate landing pages after delivery.
+
+**Attack chain:** every stage abused a legitimate platform
+(Microsoft 365 → redirector → Bolt hosting → Supabase backend).
+
 **Key findings:**
 - Both domains had **zero detections**, despite clear phishing indicators. A 0/92 score
   means "not yet reported", not "safe".
@@ -79,6 +100,8 @@ correctly. Authentication verifies the sender's **identity**, not their **intent
 | Sender email | `joseph@glidelogicio[.]co` |
 | Phishing URL | `hxxps://cairnpartnerio[.]com/ddschool` |
 | URL shortener | `zrrtkq.s[.]gy` |
+| Phishing page | `ddcschoolasd.bolt[.]host` |
+| Data backend | `tbekwctgnxucijexaqwh.supabase[.]co` |
 
 ## MITRE ATT&CK
 
