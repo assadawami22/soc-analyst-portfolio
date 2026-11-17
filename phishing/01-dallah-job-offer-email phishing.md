@@ -53,8 +53,24 @@ correctly. Authentication verifies the sender's **identity**, not their **intent
 - Request: "verify your personal and job information" — data harvesting.
 
 ### 5. Threat Intelligence Results
-*(To be added: VirusTotal detections, domain creation dates, urlscan.io screenshot.)*
 
+| Domain | Role | VirusTotal | Created | Age at delivery |
+|---|---|---|---|---|
+| `glidelogicio[.]co` | Sender domain | 0/92 | 2026-08-20 | ~80 days |
+| `cairnpartnerio[.]com` | Phishing landing page | 0/92 | 2026-10-15 | 24 days |
+| `zrrtkq.s[.]gy` | URL shortener | Legitimate service — destination pending | — | — |
+
+**Campaign timeline:**
+- 2026-08-20 — Sender domain registered
+- 2026-10-15 — Phishing page domain registered
+- 2026-10-19 — Phishing URL first submitted to VirusTotal
+- 2026-11-08 — Email received
+
+**Key findings:**
+- Both domains had **zero detections**, despite clear phishing indicators. A 0/92 score
+  means "not yet reported", not "safe".
+- The sender domain was older than the landing domain — consistent with **domain aging**
+  (to build sender reputation) and **disposable landing infrastructure**.
 ## IOCs
 
 | Type | Value |
