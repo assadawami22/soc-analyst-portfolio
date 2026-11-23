@@ -7,10 +7,11 @@
 
 ## Summary
 
-A fake job offer email impersonating Dallah Driving School (Saudi Arabia) was received
-via BCC. The email passed SPF, DKIM and DMARC, but the sender domain, link destination
-and hosting infrastructure had no relation to the impersonated organization. The goal
-was to lure job seekers into a fake "recruitment platform" to harvest personal data.
+A fake job offer email was received impersonating Dallah Driving School (Saudi Arabia).
+The email passed the three authentication checks, but the sender domain, link destination
+and hosting infrastructure had no relation to the impersonated organization. The attacker
+played on job seekers' emotions to make them submit their personal data on a fake page.
+
 
 **Verdict:** True Positive — Recruitment Phishing
 
